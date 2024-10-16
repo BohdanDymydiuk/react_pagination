@@ -4,29 +4,20 @@ import './App.css';
 import { getNumbers } from './utils';
 import { Pagination } from './components/Pagination';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const items = getNumbers(1, 42).map(n => `Item ${n}`);
 
 export const App: React.FC = () => {
   const [visiblePerPage, setVisiblePerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(0);
-  const pages: string[][] = [];
-  const page: string[] = [];
-
-  items.forEach((item, index) => {
-    if ((index + 1) % visiblePerPage === 0 || index === items.length - 1) {
-      page.push(item);
-      pages.push([...page]);
-      page.length = 0;
-    } else {
-      page.push(item);
-    }
-  });
-
-  const firstItemByPage = pages[currentPage][0];
-  const secondItemByPage = pages[currentPage][pages[currentPage].length - 1];
-  const from = firstItemByPage.split(' ')[1];
-  const to = secondItemByPage.split(' ')[1];
+  const pages: string[][] = Array.from(
+    { length: Math.ceil(items.length / visiblePerPage) },
+    (_, i) =>
+      items.slice(i * visiblePerPage, i * visiblePerPage + visiblePerPage),
+  );
+  const first = pages[currentPage].at(0);
+  const last = pages[currentPage].at(-1);
+  const from = first ? first.split(' ')[1] : 0;
+  const to = last ? last.split(' ')[1] : 0;
 
   return (
     <div className="container">
@@ -66,9 +57,9 @@ export const App: React.FC = () => {
         onPageChange={setCurrentPage}
       />
       <ul>
-        {pages[currentPage].map((item, index) => {
+        {pages[currentPage].map(item => {
           return (
-            <li data-cy="item" key={index}>
+            <li data-cy="item" key={item}>
               {item}
             </li>
           );

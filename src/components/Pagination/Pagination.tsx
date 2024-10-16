@@ -15,6 +15,9 @@ export const Pagination = ({
 }: Props) => {
   const numOfPages = Math.ceil(total / perPage);
   const pages = Array.from({ length: numOfPages }, (_, i) => i + 1);
+  const prevHandler = () => currentPage !== 0 && onPageChange(currentPage - 1);
+  const nextHandler = () =>
+    currentPage !== numOfPages - 1 && onPageChange(currentPage + 1);
 
   return (
     <>
@@ -25,7 +28,7 @@ export const Pagination = ({
             className="page-link"
             href="#prev"
             aria-disabled={currentPage === 0 ? 'true' : 'false'}
-            onClick={() => currentPage !== 0 && onPageChange(currentPage - 1)}
+            onClick={prevHandler}
           >
             «
           </a>
@@ -55,9 +58,7 @@ export const Pagination = ({
             className="page-link"
             href="#next"
             aria-disabled={currentPage === numOfPages - 1 ? 'true' : 'false'}
-            onClick={() =>
-              currentPage !== numOfPages - 1 && onPageChange(currentPage + 1)
-            }
+            onClick={nextHandler}
           >
             »
           </a>
